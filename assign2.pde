@@ -13,7 +13,8 @@ boolean upPressed, downPressed, rightPressed, leftPressed;
 int gameState = 0;
 final int GAME_START = 0;
 final int GAME_RUN = 1;
-final int GAME_LOSE = 2;
+final int GAME_RUN_SEC = 2;
+final int GAME_LOSE = 3;
 
 float soldierX,soldierY;
 
@@ -113,21 +114,102 @@ void draw() {
       }
       if(downPressed){
         groundhogIdleY += groundhogIdleSpeed;
+        image(groundhogdownImg,310+groundhogIdleX,80+groundhogIdleY);
         if(groundhogIdleY + groundhogIdleHeight > 400) groundhogIdleY = 400 - groundhogIdleHeight;
       }
       if(leftPressed){
         groundhogIdleX -= groundhogIdleSpeed;
+        image(groundhogleftImg,310+groundhogIdleX,80+groundhogIdleY);
         if(groundhogIdleX < -width/2 ) groundhogIdleX = -width/2;
       }
       if(rightPressed){
         groundhogIdleX += groundhogIdleSpeed;
+        image(groundhogrightImg,310+groundhogIdleX,80+groundhogIdleY);
         if(groundhogIdleX+groundhogIdleWidth  > width/2) groundhogIdleX = width/2-groundhogIdleWidth;
       }
       
+      if(groundhogIdleX >= soldierX
+      && groundhogIdleY >= soldierY){
+        gameState = GAME_RUN_SEC;
+      }
       
+      break;
       
+      case GAME_RUN_SEC:
+       //Image
+       image(bgImg,0,0);
+       image(soilImg,0,160);
+       
+       //cabbage
+       image(cabbageImg,cabbageX*80,cabbageY*80);
+       
+       //lifeImage
+       image(lifeImg,10,10);
+       
+       // Sun Drawing
+       stroke(255, 255, 0);
+       strokeWeight(5);
+       fill(253, 184, 19);
+       ellipse(590,50,120,120);
+       
+       // Grass Drawing
+       noStroke();
+       fill(124, 204, 25);
+       rect(0,145,640,15);
+       
+       // soldier Move
+       soldierX=soldierX+5;
+       soldierX %= 800;
+       image(soldierImg,-100+soldierX,soldierY*80);
+       
+       //groundhogIdle Move
+       image(groundhogIdleImg,310+groundhogIdleX,80+groundhogIdleY);
 
-    }     
+       if(upPressed){
+        groundhogIdleY -= groundhogIdleSpeed;
+        if(groundhogIdleY < 0) groundhogIdleY = 0;
+      }
+      if(downPressed){
+        groundhogIdleY += groundhogIdleSpeed;
+        image(groundhogdownImg,310+groundhogIdleX,80+groundhogIdleY);
+        if(groundhogIdleY + groundhogIdleHeight > 400) groundhogIdleY = 400 - groundhogIdleHeight;
+      }
+      if(leftPressed){
+        groundhogIdleX -= groundhogIdleSpeed;
+        image(groundhogleftImg,310+groundhogIdleX,80+groundhogIdleY);
+        if(groundhogIdleX < -width/2 ) groundhogIdleX = -width/2;
+      }
+      if(rightPressed){
+        groundhogIdleX += groundhogIdleSpeed;
+        image(groundhogrightImg,310+groundhogIdleX,80+groundhogIdleY);
+        if(groundhogIdleX+groundhogIdleWidth  > width/2) groundhogIdleX = width/2-groundhogIdleWidth;
+      }
+      
+      if(groundhogIdleX >= soldierX
+      && groundhogIdleY >= soldierY){
+        gameState = GAME_LOSE;
+      }
+      
+      break;
+      
+      case GAME_LOSE:
+      
+      background(0);
+       image(gameoverImg,0,0);
+       image(restartnormalImg,248,360);
+       
+       if(mouseX > BUTTON_LEFT && mouseX < BUTTON_RIGHT
+       && mouseY > BUTTON_TOP && mouseY < BUTTON_BOTTOM){
+        image(restarthoveredImg,250,360);
+       }
+       
+       if(mousePressed){
+         gameState = GAME_START;
+         }
+      
+      break;
+    }
+    
 }
 
 void keyPressed(){
