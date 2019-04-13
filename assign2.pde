@@ -8,22 +8,29 @@ int BUTTON_BOTTOM = 420;
 int BUTTON_LEFT = 248;
 int BUTTON_RIGHT = 392;
 
-boolean upPressed, downPressed, rightPressed, leftPressed;
+boolean downPressed, rightPressed, leftPressed;
+boolean groundHog = true;
+
 
 int gameState = 0;
 final int GAME_START = 0;
 final int GAME_RUN = 1;
-final int GAME_RUN_SEC = 2;
 final int GAME_LOSE = 3;
 
 float soldierX,soldierY;
 
-float groundhogIdleX=0,groundhogIdleY=0;
-float groundhogIdleSpeed = 5;
-float groundhogIdleWidth = 70;
-float groundhogIdleHeight = 80;
 
-float cabbageX,cabbageY;
+float groundhogIdleX=0,groundhogIdleY=0;
+float groundhogIdleSpeed = 80/16;
+int groundhogIdleW = 70;
+int groundhogIdleH = 80;
+
+float cabbageX ,cabbageY ;
+
+int SPACE = 80;
+
+int life = 2;
+
 
 void setup() {
   size(640, 480, P2D);
@@ -52,6 +59,8 @@ void setup() {
       cabbageY = floor(random(2,6));
    
    gameState = GAME_START;
+  
+     
    
 }
 
@@ -68,12 +77,15 @@ void draw() {
        
        if(mouseX > BUTTON_LEFT && mouseX < BUTTON_RIGHT
        && mouseY > BUTTON_TOP && mouseY < BUTTON_BOTTOM){
-        image(starthoveredImg,250,360);
+        image(starthoveredImg,248,360);
+        if(mousePressed){
+          gameState = GAME_RUN;
+          }
+       }else{
+         gameState = GAME_START;
        }
        
-       if(mousePressed){
-         gameState = GAME_RUN;
-       }
+       
     
     break;
     
@@ -82,69 +94,17 @@ void draw() {
        image(bgImg,0,0);
        image(soilImg,0,160);
        
-       //cabbage
-       image(cabbageImg,cabbageX*80,cabbageY*80);
+       //eat Cabbage
+       image(cabbageImg,cabbageX*80,cabbageY*80,80,80);
+       if(groundhogIdleX+groundhogIdleW > cabbageX && groundhogIdleX < cabbageX+SPACE && groundhogIdleY+groundhogIdleH > cabbageY && groundhogIdleY > cabbageY+SPACE){
+        
        
-       //lifeImage
-       image(lifeImg,10,10);
-       image(lifeImg,80,10);
+         image(cabbageImg,0,0,80,80);
+       }
        
-       // Sun Drawing
-       stroke(255, 255, 0);
-       strokeWeight(5);
-       fill(253, 184, 19);
-       ellipse(590,50,120,120);
+       // life in
        
-       // Grass Drawing
-       noStroke();
-       fill(124, 204, 25);
-       rect(0,145,640,15);
        
-       // soldier Move
-       soldierX=soldierX+5;
-       soldierX %= 800;
-       image(soldierImg,-100+soldierX,soldierY*80);
-       
-       //groundhogIdle Move
-       image(groundhogIdleImg,310+groundhogIdleX,80+groundhogIdleY);
-
-       if(upPressed){
-        groundhogIdleY -= groundhogIdleSpeed;
-        if(groundhogIdleY < 0) groundhogIdleY = 0;
-      }
-      if(downPressed){
-        groundhogIdleY += groundhogIdleSpeed;
-        image(groundhogdownImg,310+groundhogIdleX,80+groundhogIdleY);
-        if(groundhogIdleY + groundhogIdleHeight > 400) groundhogIdleY = 400 - groundhogIdleHeight;
-      }
-      if(leftPressed){
-        groundhogIdleX -= groundhogIdleSpeed;
-        image(groundhogleftImg,310+groundhogIdleX,80+groundhogIdleY);
-        if(groundhogIdleX < -width/2 ) groundhogIdleX = -width/2;
-      }
-      if(rightPressed){
-        groundhogIdleX += groundhogIdleSpeed;
-        image(groundhogrightImg,310+groundhogIdleX,80+groundhogIdleY);
-        if(groundhogIdleX+groundhogIdleWidth  > width/2) groundhogIdleX = width/2-groundhogIdleWidth;
-      }
-      
-      if(groundhogIdleX >= soldierX
-      && groundhogIdleY >= soldierY){
-        gameState = GAME_RUN_SEC;
-      }
-      
-      break;
-      
-      case GAME_RUN_SEC:
-       //Image
-       image(bgImg,0,0);
-       image(soilImg,0,160);
-       
-       //cabbage
-       image(cabbageImg,cabbageX*80,cabbageY*80);
-       
-       //lifeImage
-       image(lifeImg,10,10);
        
        // Sun Drawing
        stroke(255, 255, 0);
@@ -160,37 +120,45 @@ void draw() {
        // soldier Move
        soldierX=soldierX+5;
        soldierX %= 800;
-       image(soldierImg,-100+soldierX,soldierY*80);
+       image(soldierImg,-100+soldierX,soldierY*80,80,80);
        
        //groundhogIdle Move
-       image(groundhogIdleImg,310+groundhogIdleX,80+groundhogIdleY);
+       image(groundhogIdleImg,310+groundhogIdleX,80+groundhogIdleY,groundhogIdleW,groundhogIdleH);
 
-       if(upPressed){
-        groundhogIdleY -= groundhogIdleSpeed;
-        if(groundhogIdleY < 0) groundhogIdleY = 0;
-      }
+       
       if(downPressed){
         groundhogIdleY += groundhogIdleSpeed;
+        groundHog = false;
+        leftPressed = false; rightPressed = false;
         image(groundhogdownImg,310+groundhogIdleX,80+groundhogIdleY);
-        if(groundhogIdleY + groundhogIdleHeight > 400) groundhogIdleY = 400 - groundhogIdleHeight;
+        if(groundhogIdleY + groundhogIdleH > 400) groundhogIdleY = 400 - groundhogIdleH;
       }
       if(leftPressed){
         groundhogIdleX -= groundhogIdleSpeed;
+        groundHog = false;
+        rightPressed = false; downPressed = false;
         image(groundhogleftImg,310+groundhogIdleX,80+groundhogIdleY);
         if(groundhogIdleX < -width/2 ) groundhogIdleX = -width/2;
       }
       if(rightPressed){
         groundhogIdleX += groundhogIdleSpeed;
+        groundHog = false;
+        downPressed = false; leftPressed = false;
         image(groundhogrightImg,310+groundhogIdleX,80+groundhogIdleY);
-        if(groundhogIdleX+groundhogIdleWidth  > width/2) groundhogIdleX = width/2-groundhogIdleWidth;
+        if(groundhogIdleX+groundhogIdleW  > width/2) groundhogIdleX = width/2-groundhogIdleW;
       }
       
-      if(groundhogIdleX >= soldierX
-      && groundhogIdleY >= soldierY){
+      // touch Sodiler
+      
+      if(groundhogIdleX > soldierX+80 && groundhogIdleX+80 > soldierX && groundhogIdleY < soldierY+80 && groundhogIdleY+80 > soldierY){
         gameState = GAME_LOSE;
       }
       
       break;
+      
+      
+      
+
       
       case GAME_LOSE:
       
@@ -200,23 +168,22 @@ void draw() {
        
        if(mouseX > BUTTON_LEFT && mouseX < BUTTON_RIGHT
        && mouseY > BUTTON_TOP && mouseY < BUTTON_BOTTOM){
-        image(restarthoveredImg,250,360);
+        image(restarthoveredImg,248,360);
+        if(mousePressed){
+          gameState = GAME_START;
+          }
+       }else{
+         gameState = GAME_LOSE;
        }
-       
-       if(mousePressed){
-         gameState = GAME_START;
-         }
-      
+
       break;
-    }
-    
+    }    
 }
+    
+
 
 void keyPressed(){
   switch(keyCode){
-    case UP:
-    upPressed = true;
-    break;
     case DOWN:
     downPressed = true;
     break;
@@ -231,9 +198,6 @@ void keyPressed(){
 
 void keyReleased(){
   switch(keyCode){
-    case UP:
-    upPressed = false;
-    break;
     case DOWN:
     downPressed = false;
     break;
