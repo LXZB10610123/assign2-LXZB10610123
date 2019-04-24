@@ -155,6 +155,11 @@ void draw() {
       }else{
         groundHog = true;
         
+        if(groundhogIdleY + 80 > 480){
+          groundhogIdleY = 400; downPressed = false;
+           groundHog = true;
+        }
+        
          
       }{
       }
@@ -185,18 +190,9 @@ void draw() {
       rightPressed = false;
       groundHog = true;
     }
-        
-        
-      
-      
-      
-      
+             
       break;
-      
-      
-      
-
-      
+           
       case GAME_LOSE:
       
       background(0);
@@ -209,6 +205,11 @@ void draw() {
         if(mousePressed){
           gameState = GAME_START;
           life = 2;
+          soldierX = -80;
+          soldierY = 160+80*floor(random(4));
+          cabbageX = 80*floor(random(8));
+          cabbageY = 160+80*floor(random(4));
+          
           }
        }else{
          gameState = GAME_LOSE;
