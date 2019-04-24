@@ -18,21 +18,24 @@ final int GAME_RUN = 1;
 final int GAME_LOSE = 3;
 
 float soldierX,soldierY;
+float soldierW = soldierX+80,soldierH = soldierY+80;
 
 
-float groundhogIdleX=0,groundhogIdleY=0;
+float groundhogIdleX,groundhogIdleY;
 float groundhogIdleSpeed = 80/16;
-int groundhogIdleW = 70;
-int groundhogIdleH = 80;
+float groundhogIdleW = groundhogIdleX+80;
+float groundhogIdleH = groundhogIdleY+80;
+
+
 
 float cabbageX ,cabbageY ;
+float cabbageW = cabbageX+80,cabbageH = cabbageY+80; 
 
-int SPACE = 80;
-
-int life = 2;
+float life = 2;
 
 
 void setup() {
+  frameRate(60);
   size(640, 480, P2D);
   // start
    titleImg = loadImage("img/title.jpg");
@@ -55,12 +58,12 @@ void setup() {
       soldierY = floor(random(2,6));
       
    // cabbage Floor
-      cabbageX = floor(random(2,8));
-      cabbageY = floor(random(2,6));
+      cabbageX = 80*floor(random(0,8));
+      cabbageY = 160+80*floor(random(2,6));
    
    gameState = GAME_START;
   
-     
+  
    
 }
 
@@ -80,10 +83,13 @@ void draw() {
         image(starthoveredImg,248,360);
         if(mousePressed){
           gameState = GAME_RUN;
+          life = 2;
           }
        }else{
          gameState = GAME_START;
        }
+       
+       
        
        
     
@@ -94,17 +100,36 @@ void draw() {
        image(bgImg,0,0);
        image(soilImg,0,160);
        
-       //eat Cabbage
-       image(cabbageImg,cabbageX*80,cabbageY*80,80,80);
-       if(groundhogIdleX+groundhogIdleW > cabbageX && groundhogIdleX < cabbageX+SPACE && groundhogIdleY+groundhogIdleH > cabbageY && groundhogIdleY > cabbageY+SPACE){
-        
-       
-         image(cabbageImg,0,0,80,80);
-       }
        
        // life in
        
-       
+       if(life == 0){
+         gameState = GAME_LOSE;
+       }
+       if(life == 1){
+         image(lifeImg,10,10);
+       }
+       if(life == 2){
+         for(int a=0; a<2; a++){
+         image(lifeImg,10+a*70,10);
+         }
+       }
+         if(life == 3){
+         for(int a=0; a<3; a++){
+         image(lifeImg,10+a*70,10);
+         }
+         }
+         
+         //eat Cabbage
+       image(cabbageImg,cabbageX,cabbageY,80,80);
+       if(groundhogIdleX < cabbageX+80 && groundhogIdleX+80 > cabbageX
+      && groundhogIdleY < cabbageY+80 && groundhogIdleY+80 > cabbageY){
+        life ++ ;
+        cabbageX=0;
+         
+         
+       }
+         
        
        // Sun Drawing
        stroke(255, 255, 0);
@@ -123,15 +148,26 @@ void draw() {
        image(soldierImg,-100+soldierX,soldierY*80,80,80);
        
        //groundhogIdle Move
-       image(groundhogIdleImg,310+groundhogIdleX,80+groundhogIdleY,groundhogIdleW,groundhogIdleH);
-
+       
+      if(groundHog){
+         image(groundhogIdleImg,310+groundhogIdleX,80+groundhogIdleY,groundhogIdleW,groundhogIdleH);
+       }
        
       if(downPressed){
         groundhogIdleY += groundhogIdleSpeed;
         groundHog = false;
         leftPressed = false; rightPressed = false;
+        groundHog = false;
         image(groundhogdownImg,310+groundhogIdleX,80+groundhogIdleY);
-        if(groundhogIdleY + groundhogIdleH > 400) groundhogIdleY = 400 - groundhogIdleH;
+      }else{
+        groundHog = true;
+        
+        if(groundhogIdleY + groundhogIdleH > 400)
+          groundhogIdleY = 400 - groundhogIdleH;
+         
+          
+          
+      }{
       }
       if(leftPressed){
         groundhogIdleX -= groundhogIdleSpeed;
@@ -150,8 +186,15 @@ void draw() {
       
       // touch Sodiler
       
-      if(groundhogIdleX > soldierX+80 && groundhogIdleX+80 > soldierX && groundhogIdleY < soldierY+80 && groundhogIdleY+80 > soldierY){
-        gameState = GAME_LOSE;
+      if(groundhogIdleX < soldierW && groundhogIdleW > soldierX 
+      && groundhogIdleY < soldierH && groundhogIdleH > soldierY){
+        life --;
+        
+        
+      }
+      
+      if(life == 0){
+        gameState = 3;
       }
       
       break;
@@ -171,6 +214,7 @@ void draw() {
         image(restarthoveredImg,248,360);
         if(mousePressed){
           gameState = GAME_START;
+          life = 2;
           }
        }else{
          gameState = GAME_LOSE;
