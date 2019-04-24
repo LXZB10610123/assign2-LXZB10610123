@@ -158,9 +158,7 @@ void draw() {
         if(groundhogIdleY + 80 > 480){
           groundhogIdleY = 400; downPressed = false;
            groundHog = true;
-        }
-        
-         
+        }         
       }{
       }
       if(leftPressed){
@@ -169,13 +167,19 @@ void draw() {
         rightPressed = false; downPressed = false;
         image(groundhogleftImg,groundhogIdleX,groundhogIdleY);
         
+      if(groundhogIdleX< 0){
+        groundhogIdleX = 0;
+      }
+        
       }
       if(rightPressed){
         groundhogIdleX += groundhogIdleSpeed;
         groundHog = false;
         downPressed = false; leftPressed = false;
         image(groundhogrightImg,groundhogIdleX,groundhogIdleY);
-        
+        if(groundhogIdleX+80>width){
+        groundhogIdleX = width-80;
+        }  
       }
       // touch Sodiler
       
