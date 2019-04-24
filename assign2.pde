@@ -28,7 +28,7 @@ int soldierW , soldierH;
 
 int cabbageX = 80*floor(random(8));
 int cabbageY = 160+80*floor(random(4));
-int cabbageW , cabbageH;
+int cabbageW, cabbageH;
 
 float life = 2;
 
@@ -113,16 +113,12 @@ void draw() {
          //eat Cabbage
        image(cabbageImg,cabbageX,cabbageY);
          
-       groundhogIdleW = groundhogIdleX + 80;
-       groundhogIdleH = groundhogIdleY + 80;
-       cabbageW = cabbageX + 80;
-       cabbageH = cabbageY + 80;
+       groundhogIdleW = groundhogIdleX + 80; groundhogIdleH = groundhogIdleY + 80;
+       cabbageW = cabbageX + 80; cabbageH = cabbageY + 80;
        if( groundhogIdleX < cabbageW && groundhogIdleW > cabbageX && groundhogIdleY < cabbageH && groundhogIdleH > cabbageY){
        life += 1;
        cabbageX = -80;
-    }
-       
-         
+    }         
        
        // Sun Drawing
        stroke(255, 255, 0);
@@ -152,15 +148,13 @@ void draw() {
         leftPressed = false; rightPressed = false;
         groundHog = false;
         image(groundhogdownImg,groundhogIdleX,groundhogIdleY);
-      }else{
-        groundHog = true;
-        
-        if(groundhogIdleY + 80 > 480){
-          groundhogIdleY = 400; downPressed = false;
-           groundHog = true;
+        if(groundhogIdleY + 80 > height){
+          groundhogIdleY = 400; 
         }         
-      }{
+      }else{
+        groundHog = true;        
       }
+      
       if(leftPressed){
         groundhogIdleX -= groundhogIdleSpeed;
         groundHog = false;
@@ -189,9 +183,7 @@ void draw() {
       groundhogIdleX = width/2;
       groundhogIdleY = 80;
       life -= 1;
-      downPressed = false;
-      leftPressed = false;
-      rightPressed = false;
+      downPressed = false; leftPressed = false; rightPressed = false;
       groundHog = true;
     }
              
