@@ -17,22 +17,20 @@ final int GAME_START = 0;
 final int GAME_RUN = 1;
 final int GAME_LOSE = 3;
 
-float soldierX,soldierY;
-float soldierW = soldierX+80,soldierH = soldierY+80;
+int groundhogIdleX=310 , groundhogIdleY=80 ;
+int groundhogIdleW , groundhogIdleH ;
+int groundhogIdleSpeed = 5;
 
+int soldierX = -80;
+int soldierY = 160+80*floor(random(4));
+int soldierSpeed = 5;
+int soldierW , soldierH;
 
-float groundhogIdleX,groundhogIdleY;
-float groundhogIdleSpeed = 80/16;
-float groundhogIdleW = groundhogIdleX+80;
-float groundhogIdleH = groundhogIdleY+80;
-
-
-
-float cabbageX ,cabbageY ;
-float cabbageW = cabbageX+80,cabbageH = cabbageY+80; 
+int cabbageX = 80*floor(random(8));
+int cabbageY = 160+80*floor(random(4));
+int cabbageW , cabbageH;
 
 float life = 2;
-
 
 void setup() {
   frameRate(60);
@@ -53,13 +51,7 @@ void setup() {
    gameoverImg = loadImage("img/gameover.jpg");
    restartnormalImg = loadImage("img/restartNormal.png");
    restarthoveredImg = loadImage("img/restartHovered.png");
-   
-   // soldier Floor
-      soldierY = floor(random(2,6));
-      
-   // cabbage Floor
-      cabbageX = 80*floor(random(0,8));
-      cabbageY = 160+80*floor(random(2,6));
+
    
    gameState = GAME_START;
   
@@ -91,8 +83,6 @@ void draw() {
        
        
        
-       
-    
     break;
     
     case GAME_RUN:
@@ -121,14 +111,17 @@ void draw() {
          }
          
          //eat Cabbage
-       image(cabbageImg,cabbageX,cabbageY,80,80);
-       if(groundhogIdleX < cabbageX+80 && groundhogIdleX+80 > cabbageX
-      && groundhogIdleY < cabbageY+80 && groundhogIdleY+80 > cabbageY){
-        life ++ ;
-        cabbageX=0;
+       image(cabbageImg,cabbageX,cabbageY);
          
-         
-       }
+       groundhogIdleW = groundhogIdleX + 80;
+       groundhogIdleH = groundhogIdleY + 80;
+       cabbageW = cabbageX + 80;
+       cabbageH = cabbageY + 80;
+       if( groundhogIdleX < cabbageW && groundhogIdleW > cabbageX && groundhogIdleY < cabbageH && groundhogIdleH > cabbageY){
+       life += 1;
+       cabbageX = -80;
+    }
+       
          
        
        // Sun Drawing
@@ -145,12 +138,12 @@ void draw() {
        // soldier Move
        soldierX=soldierX+5;
        soldierX %= 800;
-       image(soldierImg,-100+soldierX,soldierY*80,80,80);
+       image(soldierImg,soldierX,soldierY,80,80);
        
        //groundhogIdle Move
        
       if(groundHog){
-         image(groundhogIdleImg,310+groundhogIdleX,80+groundhogIdleY,groundhogIdleW,groundhogIdleH);
+         image(groundhogIdleImg,groundhogIdleX,groundhogIdleY);
        }
        
       if(downPressed){
@@ -158,44 +151,45 @@ void draw() {
         groundHog = false;
         leftPressed = false; rightPressed = false;
         groundHog = false;
-        image(groundhogdownImg,310+groundhogIdleX,80+groundhogIdleY);
+        image(groundhogdownImg,groundhogIdleX,groundhogIdleY);
       }else{
         groundHog = true;
         
-        if(groundhogIdleY + groundhogIdleH > 400)
-          groundhogIdleY = 400 - groundhogIdleH;
          
-          
-          
       }{
       }
       if(leftPressed){
         groundhogIdleX -= groundhogIdleSpeed;
         groundHog = false;
         rightPressed = false; downPressed = false;
-        image(groundhogleftImg,310+groundhogIdleX,80+groundhogIdleY);
-        if(groundhogIdleX < -width/2 ) groundhogIdleX = -width/2;
+        image(groundhogleftImg,groundhogIdleX,groundhogIdleY);
+        
       }
       if(rightPressed){
         groundhogIdleX += groundhogIdleSpeed;
         groundHog = false;
         downPressed = false; leftPressed = false;
-        image(groundhogrightImg,310+groundhogIdleX,80+groundhogIdleY);
-        if(groundhogIdleX+groundhogIdleW  > width/2) groundhogIdleX = width/2-groundhogIdleW;
+        image(groundhogrightImg,groundhogIdleX,groundhogIdleY);
+        
       }
-      
       // touch Sodiler
       
-      if(groundhogIdleX < soldierW && groundhogIdleW > soldierX 
-      && groundhogIdleY < soldierH && groundhogIdleH > soldierY){
-        life --;
+      soldierW = soldierX+80;
+      soldierH = soldierY+80;
+      if( groundhogIdleX < soldierW && groundhogIdleW > soldierX && groundhogIdleY < soldierH && groundhogIdleH > soldierY){
+      groundhogIdleX = width/2;
+      groundhogIdleY = 80;
+      life -= 1;
+      downPressed = false;
+      leftPressed = false;
+      rightPressed = false;
+      groundHog = true;
+    }
         
         
-      }
       
-      if(life == 0){
-        gameState = 3;
-      }
+      
+      
       
       break;
       
