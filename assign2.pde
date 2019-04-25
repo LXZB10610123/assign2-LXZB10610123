@@ -33,7 +33,7 @@ int cabbageW, cabbageH;
 float life = 2;
 
 void setup() {
-  frameRate(60);
+  
   size(640, 480, P2D);
   // start
    titleImg = loadImage("img/title.jpg");
@@ -147,6 +147,9 @@ void draw() {
         groundHog = false;
         leftPressed = false; rightPressed = false;
         groundHog = false;
+        if(groundhogIdleY %80 ==0){
+          downPressed = false; groundHog = true;
+        }
         image(groundhogdownImg,groundhogIdleX,groundhogIdleY);
         if(groundhogIdleY + 80 > height){
           groundhogIdleY = 400; 
@@ -160,7 +163,9 @@ void draw() {
         groundHog = false;
         rightPressed = false; downPressed = false;
         image(groundhogleftImg,groundhogIdleX,groundhogIdleY);
-        
+        if(groundhogIdleX %80 ==0){
+          leftPressed = false; groundHog = true;
+        }
       if(groundhogIdleX< 0){
         groundhogIdleX = 0;
       }
@@ -171,6 +176,9 @@ void draw() {
         groundHog = false;
         downPressed = false; leftPressed = false;
         image(groundhogrightImg,groundhogIdleX,groundhogIdleY);
+        if(groundhogIdleX %80 ==0){
+          rightPressed = false; groundHog = true;
+        }
         if(groundhogIdleX+80>width){
         groundhogIdleX = width-80;
         }  
@@ -231,16 +239,3 @@ void keyPressed(){
   }
 }
 
-void keyReleased(){
-  switch(keyCode){
-    case DOWN:
-    downPressed = false;
-    break;
-    case RIGHT:
-    rightPressed = false;
-    break;
-    case LEFT:
-    leftPressed = false;
-    break;
-  }
-}
